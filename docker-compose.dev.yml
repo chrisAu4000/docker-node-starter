@@ -1,0 +1,22 @@
+version: '3'
+services:
+  user-auth:
+    build: .
+    command: node_modules/.bin/nodemon index.js
+    environment:
+      NODE_ENV: develop
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/home/app/user-auth
+      - /home/app/user-auth/node_modules
+  db:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - 27017:27017
+    command: 'mongod --smallfiles --storageEngine wiredTiger --logpath=/dev/null'

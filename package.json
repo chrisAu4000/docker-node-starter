@@ -2,6 +2,7 @@
   "name": "user-auth",
   "version": "0.0.1",
   "description": "auth",
+  "repository": "https://github.com/chrisAu4000/docker-node-starter.git",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +11,11 @@
   "license": "MIT",
   "keywords": [],
   "dependencies": {
-    "express": "^4.16.2"
+    "crocks": "^0.7.1",
+    "express": "^4.16.2",
+    "glob": "^7.1.2",
+    "ip": "^1.1.5",
+    "mongoose": "^4.12.6"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"

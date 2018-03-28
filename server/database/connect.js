@@ -2,6 +2,7 @@ const Async = require('crocks/Async')
 const curry = require('crocks/helpers/curry')
 const mongoose = require('mongoose')
 const models = require('./model')
+const debug = require('debug')('app')
 
 const initializeModel = curry(({ name, schema, collection }) =>
 	mongoose.model(name, new mongoose.Schema(schema, { collection: collection }))
@@ -17,7 +18,7 @@ const connect = (url) => Async((rej, res) => {
 		res(connection)
 	}).catch(res)
 	process.once('SIGINT', () => mongoose.close(() => {
-		console.log('Mongoose default connection disconnected through app termination')
+		debug('Mongoose default connection disconnected through app termination')
 		process.exit(0)
 	}))
 })

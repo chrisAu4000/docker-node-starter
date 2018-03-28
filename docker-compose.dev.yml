@@ -1,12 +1,13 @@
 version: '3'
 services:
-  user-auth:
+  web:
     build: .
     command: node_modules/.bin/nodemon index.js
     environment:
-      NODE_ENV: develop
+      - NODE_ENV=develop
+      - DEBUG=app
     ports:
-      - '3000:3000'
+      - '1337:1337'
     volumes:
       - .:/home/app/user-auth
       - /home/app/user-auth/node_modules

@@ -19,6 +19,8 @@ module.exports = {
 		email: {
 			type: String,
 			trim: true,
+			unique: [ true, 'E-Mail already exists' ],
+			dropDups: true,
 			required: [ true, 'E-Mail is required' ],
 			minlength: [ 5, 'E-Mail should be at least 5 characters long.' ],
 			maxlength: [ 60, 'Password is to long' ],

@@ -12,7 +12,11 @@ const prodErrs = mongoErr => {
 	}
 }
 
-const toObject = doc => doc.toObject()
+const toObject = doc => Async((rej, res) => doc
+	? res(doc.toObject())
+	: rej({ statusCode: 404, message: 'Not Found' })
+)
+
 const toError = mongoErr => {
 	return {
 		statusCode: 401,
@@ -27,17 +31,17 @@ module.exports = (connection) => {
 	const insert = data => Async(
 		(rej, res) => User
 			.create(data)
-			.then(toObject)
 			.then(res)
-			.catch(pipe(toError, rej))
-	)
+			.catch(pipe(toError, rej)))
+		.chain(toObject)
+
 	const findOneBy = curry((propName,data) => Async(
 		(rej, res) => User
 			.findOne(objOf(propName, data[propName]))
-			.then(toObject)
 			.then(res)
-			.catch(pipe(toError, rej))
-	))
+			.catch(pipe(toError, rej)))
+		.chain(toObject))
+
 	return {
 		insert,
 		findOneBy

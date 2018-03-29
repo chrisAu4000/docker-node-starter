@@ -5,12 +5,13 @@ const curry = require('crocks/helpers/curry')
 const fanout = require('crocks/helpers/fanout')
 const identity = require('crocks/combinators/identity')
 const maybeToAsync = require('crocks/Async/maybeToAsync')
-const merge = require('crocks/Pair/merge')
 const prop = require('crocks/Maybe/prop')
 const router = require('express').Router()
 const crypto = require('../services/crypto/hash')
-const jwt = require('../services/jwt/sign')
 const User = require('./User')
+
+// mapRight : Functor f => (a -> b -> c) -> Pair a (f b) -> f c
+const mapRight = f => (l, r) => r.map(f(l))
 
 const registrationData = curry((name, email, password) =>
 	({ name, email, password })
@@ -24,32 +25,24 @@ const mkRegistrationData = req => Async
 
 const hash = str => crypto.hash(Math.round(Math.random() * 10), str)
 
+const setPassword = mapRight(curry((a, hash) => assign({ password: hash }, a)))
+
 const hashPassword = registrationData =>
 	fanout(identity, prop('password'), registrationData)
 		.map(maybeToAsync('password is required'))
 		.map(chain(hash))
-		.merge((a, hash) =>
-			hash.map(hash => assign({ password: hash }, a))
-		)
-
+		.merge(setPassword)
 
 module.exports = (connection) => {
 	const user = User(connection)
-	// console.log(user)
 	router.post('/register',
-		(req, res) => {
-			return mkRegistrationData(req)
-				.chain(hashPassword)
-				.chain(user.insert)
-				.map(fanout(identity, jwt.sign('secret')))
-				.chain(merge(
-					(a, t) => t.map(token => ({ jwt: token, user: a }))
-				))
-				.fork(
-					err => res.status(400).json({ status: 400, message: err }),
-					suc => res.json(suc)
-				)
-		}
+		(req, res) => mkRegistrationData(req)
+			.chain(hashPassword)
+			.chain(user.insert)
+			.fork(
+				err => res.status(400).json({ statusCode: 400, message: err }),
+				suc => res.json(suc)
+			)
 	)
 	router.post('/login',
 		(req, res) => res.json({ login: 'login' })

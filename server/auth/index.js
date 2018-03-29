@@ -68,7 +68,7 @@ const sign = pipe(
 
 module.exports = (connection) => {
 	const user = User(connection)
-	router.post('/register',
+	router.post('/registration',
 		(req, res) => mkRegistrationData(req)
 			.chain(hashPassword)
 			.chain(user.insert)

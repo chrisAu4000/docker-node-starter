@@ -9,8 +9,8 @@ services:
     ports:
       - '1337:1337'
     volumes:
-      - .:/home/app/user-auth
-      - /home/app/user-auth/node_modules
+      - .:/home/app/web
+      - /home/app/web/node_modules
   db:
     image: mongo:latest
     environment:

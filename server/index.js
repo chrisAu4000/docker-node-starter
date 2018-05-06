@@ -2,12 +2,14 @@ const Async = require('crocks/Async')
 const Express = require('express')
 
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 const curry = require('crocks/helpers/curry')
 const ip = require('ip')
 const express = Express()
 const dbConnect = require('./database/connect')
 const debug = require('debug')('app')
 const auth = require('./auth')
+
 
 const exit = (err) => {
 	debug('ERROR:')
@@ -28,6 +30,7 @@ const launch = () =>
 	})
 
 const setupMiddleware = app => {
+	app.use(morgan('dev'))
 	app.use(bodyParser.json())
 	return app
 }

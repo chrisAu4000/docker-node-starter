@@ -9,6 +9,4 @@ const sign = curry(
 	)
 )
 
-module.exports = {
-	sign
-}
+module.exports = sign

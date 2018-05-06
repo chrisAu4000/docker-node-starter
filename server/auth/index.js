@@ -5,7 +5,7 @@ const constant = require('crocks/combinators/constant')
 const curry = require('crocks/helpers/curry')
 const fanout = require('crocks/helpers/fanout')
 const identity = require('crocks/combinators/identity')
-const jwt = require('../services/jwt/sign')
+const jwt = require('../services/jwt')
 const map = require('crocks/pointfree/map')
 const maybeToAsync = require('crocks/Async/maybeToAsync')
 const merge = require('crocks/Pair/merge')
@@ -88,6 +88,15 @@ module.exports = (connection) => {
 				suc => res.json(suc)
 			)
 	)
+
+	router.post('/authenticate', (req, res) => {
+		const authorization = req.headers.authorization
+		jwt.verify('secret', authorization.replace('Bearer ', ''))
+			.fork(
+				err => res.status(401).json({ message: err.message }),
+				user => res.status(200).json(user)
+			)
+	})
 	router.post('/forgot-password',
 		(req, res) => res.json({ 'forgot-password': 'forgot-password' })
 	)

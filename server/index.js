@@ -2,10 +2,11 @@ const Async = require('crocks/Async')
 const Express = require('express')
 
 const bodyParser = require('body-parser')
-const morgan = require('morgan')
+const cors = require('cors')
 const curry = require('crocks/helpers/curry')
-const ip = require('ip')
 const express = Express()
+const ip = require('ip')
+const morgan = require('morgan')
 const dbConnect = require('./database/connect')
 const debug = require('debug')('app')
 const auth = require('./auth')
@@ -31,6 +32,7 @@ const launch = () =>
 
 const setupMiddleware = app => {
 	app.use(morgan('dev'))
+	app.use(cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }))
 	app.use(bodyParser.json())
 	return app
 }

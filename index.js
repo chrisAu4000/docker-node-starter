@@ -1,5 +1,8 @@
 const startServer = require('./server')
+const debug = require('debug')('app')
+
+process.on('unhandledRejection', (reason) => {
+	process.env.NODE_ENV === 'develop' && debug(reason)
+})
 
 startServer()
-// app.get('/', (req, res) => res.send('HELLO'))
-// app.listen(3000, () => console.log(process.env.NODE_ENV + ' is listen on 3000'))
